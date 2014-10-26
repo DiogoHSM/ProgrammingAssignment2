@@ -1,72 +1,43 @@
-## Put comments here that give an overall description of what your
-## functions do
+## Functions to calculate and cache the inverse of matrix
 
-## Write a short comment describing this function
+## Create a matrix and cache of the inverse
 
-makeCacheMatrix <- function(x = matrix()) {
-
-}
-
-
-## Write a short comment describing this function
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
-}
-
-
-## Functions for creating and using inverted matrices which caching ability
-
-
-## Creates cacheable matrix for inputting to
-## cacheSolve() function which sets and gets 
-## the cached values
-
-makeCacheMatrix <- function(original.matrix = matrix()) {
+makeCacheMatrix <- function(matrix.x = matrix()) {
   
-  # Let's check if we have correct input
-  if (!is.matrix(original.matrix)) {
-    stop("Please give a matrix")
+  if (!is.matrix(matrix.x)) { #Check if it is a real matrix
+    stop("Matrix test failed")
   }
   
-  inverted.matrix <- NULL
+  matrix.inv <- NULL
   
   set <- function(y) {
-    original.matrix <<- y
-    inverted.matrix <<- NULL
+    matrix.x <<- y
+    matrix.inv <<- NULL
   }
   
-  # Functions for getting and setting cached inv. matrix value
-  get <- function() original.matrix
-  # Inversing the matrix using build in solve() function in R
-  set.inverse <- function(solve) inverted.matrix <<- solve
-  get.inverse <- function() inverted.matrix
+  get <- function() matrix.x
+  setinverse <- function(solve) matrix.inv <<- solve #Invert matrix
+  getinverse <- function() matrix.inv
   
   list(
     set = set, 
     get = get,
-    set.inverse = set.inverse,
-    get.inverse = get.inverse)
+    setinverse = setinverse,
+    getinverse = getinverse)
   
 }
 
+## Function to check and/or create a inverted matrix cache
 
-## Computes the inverse of the cacheable matrix returned by makeCacheMatrix()
-## If the inverse has already been calculated and there's no change in the matrix
-## then the cacheSolve() returns the cached inverse
+cacheSolve <- function(matrix.cache, ...) {
+  matrix.inv <- matrix.cache$getinverse()
 
-cacheSolve <- function(cacheable.matrix, ...) {
-  inverted.matrix <- cacheable.matrix$get.inverse()
-  # Do we have cached matrix available?
-  if(!is.null(inverted.matrix)) {
-    message("Getting cached inverse matrix")
-    return(inverted.matrix)
+  if(!is.null(matrix.inv)) { #The chache exists
+    return(matrix.inv)
   }
-  # Let's create inverted matrix in case
-  # there's no cached matrix available.
-  matrix.to.inverse <- cacheable.matrix$get()
-  inverted.matrix <- solve(matrix.to.inverse)
-  cacheable.matrix$set.inverse(inverted.matrix)
-  inverted.matrix
+  matrix.Y <- matrix.cache$get() #Matrix to inverse
+  matrix.inv <- solve(matrix.Y)
+  matrix.cache$setinverse(matrix.inv)
+  matrix.inv
   
 }
